@@ -1,0 +1,131 @@
+Using gokit to build microservices
+
+25 Aug 2015
+Tags: gokit, golang, wercker
+
+Benno van den Berg
+Engineer, wercker
+bennovandenberg@gmail.com
+@hatchan_kitsune
+
+* Agenda
+
+- What is go-kit?
+- Core concepts
+- Additional services
+
+* go-kit
+
+- Higher-order abstractions for microservices
+- Like Go, strong idioms and opinions
+- But not too opinionated - no need to reinvent your infrastructure
+
+* Goal
+
+- Live inside the application layer
+- Focus on microservice architecture
+- Focus on RPC
+- Pluggable transports
+- Best practises
+
+Similar to:
+
+- Finagle (Twitter)
+- Ribbon (Netflix)
+
+* Core concepts
+
+* Business logic
+
+.code business_example.go
+
+* endpoint (1)
+
+- Fundamental building block of go-kit
+- Used in both server and client side
+- An abstraction to model individual RPC's
+
+    type Endpoint func(ctx context.Context, request interface{}) (response interface{}, err error)
+
+.image endpoint.png
+
+* endpoint (2)
+
+.code endpoint_example.go
+
+* transport (1)
+
+- Exposes the endpoint with specific transport details
+- Possible to have multiple transports per Endpoint
+
+Current implementation: 
+
+- http/json
+
+* transport (2)
+
+.code bootstrap_example.go
+
+* middleware (1)
+
+- Takes an Endpoint and returns an new Endpoint
+- Allows the Middlware to modify the behaviour of the Endpoint
+
+    type Middleware func(Endpoint) Endpoint
+
+.image middleware.png
+
+* middleware (2)
+
+.code middleware_example.go
+
+* middleware (3)
+
+.code bootstrap2_example.go
+
+* Additional services
+
+* loadbalancer (1)
+
+.image loadbalancer.png
+
+.code loadbalancer.go /^type LoadBalancer/,/^}$/
+
+- Retrieve a single Endpoint
+- Uses some algorithm to select a Endpoint
+
+* loadbalancer (2)
+
+.image loadbalancer2.png
+
+.code publisher.go /^type Publisher/,/^}$/
+
+- static
+- dnssrv
+- etcd and consul planned
+
+* loadbalancer (3)
+
+Takes a loadbalancer, returns an Endpoint
+
+    func Retry(max int, timeout time.Duration, lb LoadBalancer) endpoint.Endpoint {
+
+.image loadbalancer3.png
+
+* circuitbreaker
+
+- Middleware for the circuitbreaker pattern
+- Immediately fail an Endpoint if it failed for X times
+- Tries again within a certain threshold
+
+* Even more
+
+- tracing: Dapper style request tracing
+- metrics: Counter, Gauge, Histrogram
+- log: Structured logs with multiple backends
+- ratelimit: token bucket limiter or throttler
+
+* Resources
+
+- https://github.com/go-kit/kit
+- GopherCon 2015: Peter Bourgon - Go Kit: A Standard Library for Distributed Programming https://www.youtube.com/watch?v=1AjaZi4QuGo
