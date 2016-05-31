@@ -1,0 +1,50 @@
+Kubernetes
+From 0 to 100 in 30 minutes
+25 Aug 2015
+Tags: kubernetes, wercker
+
+Benno van den Berg
+Engineer, wercker
+bennovandenberg@gmail.com
+@hatchan_kitsune
+
+* Containers
+
+# What are containers?
+# Portable, isolated, static binaries
+# Examples include, docker, rkt, jetpack
+
+* Pods
+
+# Smallest unit of work
+
+* Replica controllers
+
+# In charge of keeping X pods alive
+
+* Services
+
+# Simplify communication between pods
+
+* Deployments
+
+# Evolution of replica controllers
+
+* Secrets
+
+# pull secrets?
+# 
+
+* Ingress
+
+# Used to expose multiple microservices
+
+* Job
+
+* DaemonSet
+
+* kubectl tips
+
+# config
+# JSONPath support
+# Go template support
